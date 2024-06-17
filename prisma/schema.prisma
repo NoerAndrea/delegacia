@@ -1,0 +1,33 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Crimonosos {
+  cpf String @db.VarChar(11) @unique
+  nome String @db.VarChar(255)
+  dataNascimento DateTime @db.Timestamp() @map("data_nascimento")
+  endereco String @db.VarChar(255)
+
+  @@map("criminosos")
+}
+
+enum TipoCrime {
+  Homicidio
+  Assalto
+  Trafico
+  Suborno
+}
+
+model Crimes {
+  id String @id @db.Uuid @default(uuid())
+  tipo TipoCrime
+  dataCrime DateTime @db.Timestamp() @map("data_crime")
+  local String @db.VarChar(255)
+  
+}
