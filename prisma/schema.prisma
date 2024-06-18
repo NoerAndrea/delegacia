@@ -29,5 +29,20 @@ model Crimes {
   tipo TipoCrime
   dataCrime DateTime @db.Timestamp() @map("data_crime")
   local String @db.VarChar(255)
-  
+
+  @@map("crimes")
+}
+
+enum TipoArma {
+  Branca
+  Fogo
+}
+model Armas {
+  id String @id @db.Uuid @default(uuid())
+  tipo TipoArma
+  calibre Int? @db.SmallInt 
+  numeracao Int? @db.Integer
+  descricao String @db.VarChar(255)
+
+  @@map("armas")
 }
