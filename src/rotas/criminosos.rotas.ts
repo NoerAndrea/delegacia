@@ -8,7 +8,7 @@ export class CriminososRoutes {
         
         router.post("/", CriminososControle.create)
         router.get("/", CriminososControle.list);
-        router.get("/:id", CriminososControle.get);
+        router.get("/:cpf", CriminososControle.get);
         router.put("/", CriminososControle.update);
         router.delete("/", CriminososControle.delete);
 
