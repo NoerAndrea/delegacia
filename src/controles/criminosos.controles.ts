@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { conexaoPrisma } from "../database/prisma.connection";
 import { count } from "console";
+import { Await } from "react-router-dom";
+import { ok } from "assert";
 
 export class CriminososControle {
   public static async create(req: Request, res: Response) {
@@ -90,7 +92,6 @@ export class CriminososControle {
         },
       });
       console.log(criminosoEncontrado);
-      
 
       if (!criminosoEncontrado) {
         return res.status(400).json({
@@ -112,7 +113,60 @@ export class CriminososControle {
     }
   }
 
-  public static update(req: Request, res: Response) {}
+  public static async update(req: Request, res: Response) {
+    try {
+      const { cpf } = req.params;
+      const { nome, endereco } = req.body;
 
-  public static delete(req: Request, res: Response) {}
+      const criminosoAtualizado = await conexaoPrisma.crimonosos.update({
+        where: {
+          cpf,
+          deletado: false,
+        },
+        data: {
+          nome,
+          endereco,
+        },
+      });
+
+      return res.status(200).json({
+        ok: true,
+        message: "Criminoso atualizado com sucesso",
+        criminosoAtualizado,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        ok: false,
+        message: `Ocorreu um erro inesperado. Erro ${(err as Error).name}`,
+      });
+    }
+  }
+
+  public static async delete(req: Request, res: Response) {
+    try {
+      const { cpf } = req.params;
+      const criminosoDeletado = await conexaoPrisma.crimonosos.update({
+        where: {
+          cpf,
+          deletado: false,
+        },
+        data: {
+          deletado: true,
+          deletadoEM: new Date(),
+        },
+      });
+
+      return res.status(500).json({
+        ok: true,
+        message: "Criminoso deletado com sucecsso!",
+        criminosoDeletado,
+      });
+      
+    } catch (err) {
+      return res.status(500).json({
+        ok: false,
+        message: `Ocorreu um erro inesperado. Erro ${(err as Error).name}`,
+      });
+    }
+  }
 }

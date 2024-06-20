@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "criminosos" ADD COLUMN     "deletado_em" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
