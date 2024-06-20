@@ -15,7 +15,7 @@ model Crimonosos {
   endereco String @db.VarChar(255)
   criadoEm DateTime @db.Timestamp() @default(now()) @map("criado_em")
   deletado Boolean @db.Boolean @default(false)
-  deletadoEM DateTime @db.Timestamp() @default(now()) @map("deletado_em")
+  deletadoEM DateTime? @db.Timestamp() @map("deletado_em")
 
   @@map("criminosos")
 }
