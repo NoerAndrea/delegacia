@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,14 +7,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Crimonosos {
-  cpf String @db.VarChar(11) @unique
-  nome String @db.VarChar(255)
-  dataNascimento DateTime @db.Timestamp() @map("data_nascimento")
-  endereco String @db.VarChar(255)
-  criadoEm DateTime @db.Timestamp() @default(now()) @map("criado_em")
-  deletado Boolean @db.Boolean @default(false)
-  deletadoEM DateTime? @db.Timestamp() @map("deletado_em")
+model Criminosos {
+  cpf            String    @id @db.VarChar(11) @unique
+  nome           String    @db.VarChar(255)
+  dataNascimento DateTime  @db.Timestamp() @map("data_nascimento")
+  endereco       String    @db.VarChar(255)
+  criadoEm       DateTime  @db.Timestamp() @default(now()) @map("criado_em")
+  deletado       Boolean   @db.Boolean @default(false)
+  deletadoEm     DateTime? @db.Timestamp() @map("deletado_em")
+
+  crimes Crimes[]
 
   @@map("criminosos")
 }
@@ -28,10 +29,15 @@ enum TipoCrime {
 }
 
 model Crimes {
-  id String @id @db.Uuid @default(uuid())
-  tipo TipoCrime
-  dataCrime DateTime @db.Timestamp() @map("data_crime")
-  local String @db.VarChar(255)
+  id           String     @id @db.Uuid @default(uuid()) @unique
+  tipo         TipoCrime
+  dataCrime    DateTime   @db.Timestamp() @map("data_crime")
+  local        String     @db.VarChar(255)
+
+  criminosoCpf String     @map("criminoso_cpf")
+  criminoso    Criminosos @relation(fields: [criminosoCpf], references: [cpf])
+
+  armas Armas[]
 
   @@map("crimes")
 }
@@ -40,12 +46,16 @@ enum TipoArma {
   Branca
   Fogo
 }
+
 model Armas {
-  id String @id @db.Uuid @default(uuid())
-  tipo TipoArma
-  calibre Int? @db.SmallInt 
-  numeracao Int? @db.Integer
-  descricao String @db.VarChar(255)
+  id         String   @id @db.Uuid @default(uuid()) @unique
+  tipo       TipoArma
+  calibre    Int?     @db.SmallInt
+  numeracao  Int?     @db.Integer
+  descricao  String   @db.VarChar(255)
+
+  crimeId    String   @db.Uuid @map("crime_id")
+  crime      Crimes   @relation(fields: [crimeId], references: [id])
 
   @@map("armas")
 }
